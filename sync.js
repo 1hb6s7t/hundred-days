@@ -1,4 +1,4 @@
-import {cloudConfig,authRedirectUrl} from './config.js';
+import {cloudConfig,authRedirectUrl} from './config.js?v=2';
 import {freshState,validateState,mergeStates} from './core.js';
 const SESSION='hundred-session-v1';
 export function authErrorMessage(error){
