@@ -27,7 +27,9 @@ function loadUser(){
  selectedDay=Math.max(1,Math.min(100,dayNumber(start())));render();
 }
 const cloud=new Cloud((status,error='')=>{syncStatus=status;syncError=error;updateStatus();},loadUser,remote=>{
+ const followToday=selectedDay===Math.max(1,Math.min(100,dayNumber(start())));
  const changed=JSON.stringify(remote)!==JSON.stringify(state);state=remote;persist();
+ if(followToday)selectedDay=Math.max(1,Math.min(100,dayNumber(start())));
  if(changed&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)&&!$('#modal').open)render();
 },()=>state);
 function updateStatus(){document.querySelectorAll('[data-sync-status]').forEach(el=>{el.textContent=syncStatus;el.title=syncError;});}

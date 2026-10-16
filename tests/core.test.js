@@ -7,7 +7,7 @@ test('calendar spans 100 days across year boundary, Shanghai date stays correct'
  assert.equal(addDays('2026-10-19',99),'2027-01-26');assert.equal(dayNumber('2026-10-19','2027-01-26'),100);assert.equal(dateKey(new Date('2026-10-18T17:00:00Z')),'2026-10-19');assert.equal(validDate('2026-02-30'),false);
 });
 test('default schedule includes 41 strength days, safe spacing and five mocks',()=>{
- const plans=Array.from({length:100},(_,i)=>makePlan(i+1));const lifts=plans.filter(p=>p.strength);assert.equal(lifts.length,41);assert.deepEqual(plans.filter(p=>p.mock).map(p=>p.day),mockDays);assert.equal(plans[99].strength,false);assert.ok(lifts.every((p,i)=>i===0||p.day-lifts[i-1].day>=2));
+ const plans=Array.from({length:100},(_,i)=>makePlan(i+1));const lifts=plans.filter(p=>p.strength);assert.equal(lifts.length,41);assert.equal(plans.reduce((sum,p)=>sum+p.english,0)/60,292.5);assert.deepEqual(plans.filter(p=>p.mock).map(p=>p.day),mockDays);assert.equal(plans[99].strength,false);assert.ok(lifts.every((p,i)=>i===0||p.day-lifts[i-1].day>=2));
  for(const p of plans){assert.equal(p.tasks.filter(t=>t.group==='english').reduce((sum,t)=>sum+t.minutes,0),p.english);assert.ok(p.tasks.every(t=>!t.minutes||t.minutes>0));assert.equal(new Set(p.tasks.map(t=>t.id)).size,p.tasks.length);}
  assert.equal(setsFor(50,0),2);assert.equal(setsFor(35,0),3);assert.equal(setsFor(92,0),2);
 });

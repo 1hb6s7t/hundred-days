@@ -57,5 +57,21 @@ export class Cloud {
   finally{this.busy=false;if(this.again){this.again=false;this.schedule();}}
  }
  schedule(){clearTimeout(this.timer);this.timer=setTimeout(()=>this.sync(),1200);}
- start(){this.onUser();this.sync();setInterval(()=>{if(!document.hidden)this.sync();},30000);window.addEventListener('online',()=>this.sync());document.addEventListener('visibilitychange',()=>{if(!document.hidden)this.sync();});}
+ async start(){
+  // Email verification links use Supabase's client-side implicit callback.
+  const fragment=new URLSearchParams(location.hash.slice(1));
+  if(fragment.has('access_token')){
+   history.replaceState(null,'',location.pathname+location.search);
+   try {
+    const user=await this.request('/auth/v1/user',{token:fragment.get('access_token')});
+    this.saveSession({user,access_token:fragment.get('access_token'),refresh_token:fragment.get('refresh_token'),expires_at:Date.now()/1000+Number(fragment.get('expires_in')||3600)});
+   }catch{this.onStatus('验证链接已失效，请重新登录');}
+  }
+  this.onUser();this.sync();setInterval(()=>{if(!document.hidden)this.sync();},30000);
+  window.addEventListener('online',()=>this.sync());
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)this.sync();});
+  window.addEventListener('storage',event=>{
+   if(event.key===SESSION){const old=this.user?.id;try{this.session=JSON.parse(event.newValue||'null');}catch{this.session=null;}if(this.user?.id!==old)this.onUser();this.sync();}
+  });
+ }
 }
