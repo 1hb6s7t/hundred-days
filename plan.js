@@ -19,10 +19,10 @@ export function makePlan(day,start='2026-10-19',level='A1') {
  const strength=day!==100 && (day===99 || (day<=14?[0,5]:[0,2,5]).includes(dow));
  const workout=day===99?'A':dow===0?'A':day<=14?'B':dow===2?'B':'C';
  const deload=(day>=50&&day<=56)||day>=92;
- const minutes=strength?(day<=14?40:day<=28?45:deload?40:55):sunday?30:25;
+ const minutes=strength?(day<=14?40:day<=28?45:deload?40:55):sunday?35:25;
  const unit=day<=5?day-1:Math.min(27,Math.floor((day-1)*28/100));
  const topic=topics[unit];
- const budget=mock?[40,60,60,english-160]:english===120?[30,15,20,20,35]:english===150?[35,15,30,25,45]:english===210?[45,20,45,35,65]:english===180?[40,15,35,30,60]:english===270?[60,20,60,40,90]:[45,20,60,35,80];
+ const budget=mock?[40,60,60,english-160]:english===120?[25,15,20,20,40]:english===150?[35,20,30,20,45]:english===210?[50,20,40,30,70]:english===180?[30,20,40,30,60]:english===270?[60,20,60,40,90]:[45,20,60,35,80];
  const lesson=day<=5?{name:firstLessons[day-1][0],url:bc('A1')+'/'+firstLessons[day-1][1]}:{name:sunday?'复听本周难点＋真人交流':`${level} 分级听力 · 选一篇未学新材料`,url:bc(level)};
  const output=day<=14?'60–80词短文':day<=28?'80–120词段落':day<=56?'一个有理由和例子的论证段':'Task 1 / Task 2 轮换；依据能力缩短';
  const tasks=mock?[
