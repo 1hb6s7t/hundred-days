@@ -7,15 +7,21 @@ export function routine(p,minimum=false){
  if(minimum){
   const weekend=p.dow===5||p.dow===6;
   return weekend?[
+   block(at(8),at(8,40),'早餐与当天准备'),
    block(at(9),at(9,10),'听熟悉材料 10 分钟',['min-listen'],'听完立刻勾选'),
    block(at(9,20),at(9,30),'旧词块提取 10 分钟',['min-chunks'],'完成后勾选'),
+   block(at(12),at(12,30),'午餐'),
    block(at(14),at(14,10),'说或写 10 分钟',['min-output'],'留下自己的句子后勾选'),
    block(at(16),at(16,20),'轻松步行 20 分钟',['min-move'],'走完后勾选'),
+   block(at(18,30),at(19,10),'晚餐'),
    block(at(21,30),at(21,35),'核对三餐与睡眠',['min-life'],'确认后勾选；22:15 左右准备睡觉')
   ]:[
    block(at(6,35),at(6,45),'听熟悉材料 10 分钟',['min-listen'],'听完立刻勾选'),
+   block(at(7,15),at(7,40),'早餐与出门准备'),
+   block(at(12),at(12,20),'午餐'),
    block(at(12,20),at(12,30),'旧词块提取 10 分钟',['min-chunks'],'完成后勾选'),
    block(at(17,30),at(17,50),'通勤步行 15–20 分钟',['min-move'],'走完后勾选'),
+   block(at(19),at(19,25),'晚餐'),
    block(at(20,30),at(20,40),'说或写 10 分钟',['min-output'],'留下自己的句子后勾选'),
    block(at(21,30),at(21,35),'核对三餐与睡眠',['min-life'],'确认后勾选；22:15 左右准备睡觉')
   ];
@@ -33,9 +39,9 @@ export function routine(p,minimum=false){
   rows.push(block(at(12),at(12,20),'午餐'));
   if(!p.mock)rows.push(block(at(12,20),at(12,20)+t.chunks,'词块主动提取',['chunks'],'完成闭卷回想和造句后打卡'));
   rows.push(block(at(13),at(17,30),'工作'));
-  rows.push(block(at(17,30),at(17,45),'步行回家',p.strength?[]:['move'],p.strength?'通勤计入日常步数':'两段通勤合计约30分钟；达到今日步行目标后打卡'));
+  rows.push(block(at(17,30),at(17,45),'步行回家',[],'与早上通勤合计约30分钟'));
   if(p.strength){rows.push(block(at(17,55),at(17,55)+t.move,`力量训练 ${p.workout}`,['move'],'训练结束、记录动作后打卡'));rows.push(block(at(17,55)+t.move,at(17,55)+t.move+8,'体态活动 8 分钟',['mobility'],'做完打卡'));}
-  else rows.push(block(at(17,55),at(18,3),'体态活动 8 分钟',['mobility'],'做完打卡'));
+  else{rows.push(block(at(17,55),at(18,10),'加走15分钟',['move'],'与两段通勤合计约45分钟；完成后打卡'));rows.push(block(at(18,15),at(18,23),'体态活动 8 分钟',['mobility'],'做完打卡'));}
   rows.push(block(at(19),at(19,25),'晚餐；核对今天三餐',['food'],'吃完并确认三餐后打卡'));
   if(p.mock){
    rows.push(block(at(19,30),at(20,30),'模考阅读',['mock-read'],'核对答案前记录原始作答；完成后打卡'));
@@ -93,15 +99,18 @@ export function routine(p,minimum=false){
 export function shoppingWeek(week){const start=(week-1)*7+1,end=Math.min(100,start+6),days=end-start+1;
  const qty=(amount,unit)=>`${Number((amount*days/7).toFixed(2))} ${unit}`;
  const items=[
-  {id:'rice',group:'主食',label:'米饭 / 面条',options:[`大米或杂粮米（生重）约 ${qty(.7,'kg')}`,`干面条或意面约 ${qty(.7,'kg')}`]},
-  {id:'breakfast',group:'主食',label:'早餐主食',options:[`原味燕麦约 ${qty(.4,'kg')}`,`全麦或普通面包约 ${qty(.6,'kg')}`,`馒头约 ${qty(.6,'kg')}`]},
-  {id:'tubers',group:'主食',label:'换口味的主食',options:[`土豆 / 红薯约 ${qty(.8,'kg')}`,`玉米可食部分约 ${qty(.8,'kg')}`]},
-  {id:'poultry',group:'蛋白来源',label:'一类肉食',options:[`鸡肉约 ${qty(.8,'kg')}`,`瘦牛 / 猪肉约 ${qty(.8,'kg')}`,`增加豆腐约 ${qty(1.2,'kg')}，按标签核对蛋白`]},
-  {id:'fish',group:'蛋白来源',label:'鱼虾',options:[`鱼肉约 ${qty(.4,'kg')}`,`虾仁约 ${qty(.4,'kg')}`,`不吃鱼虾：改用其他蛋白，留意营养搭配`]},
-  {id:'eggs',group:'蛋白来源',label:'鸡蛋',options:[`鸡蛋约 ${Math.max(3,Math.round(10*days/7))} 枚`,`不吃蛋：换豆腐 / 奶 / 肉，按实际份量补充`]},
-  {id:'tofu',group:'蛋白来源',label:'豆制品',options:[`北豆腐 / 豆干约 ${qty(.8,'kg')}`,`其他豆制品，参考包装蛋白含量`]},
-  {id:'milk',group:'蛋白来源',label:'奶或替代品',options:[`牛奶 / 原味酸奶约 ${qty(2,'L')}`,`无糖豆奶或强化植物奶约 ${qty(2,'L')}，看标签`]},
-  {id:'veg',group:'蔬果',label:'蔬菜',options:[`多色蔬菜约 ${qty(2.8,'kg')}，深色占一半左右`,`冷冻蔬菜和鲜蔬组合约 ${qty(2.8,'kg')}`]},
+  {id:'rice',group:'主食',label:'米饭用米',options:[`大米或杂粮米（生重）约 ${qty(.7,'kg')}`,`即食熟饭约 ${qty(2,'kg')}，按包装份量购买`]},
+  {id:'noodles',group:'主食',label:'面条',options:[`干面条或意面约 ${qty(.35,'kg')}`,`用米饭 / 馒头 / 薯类替换相应主食份量`]},
+  {id:'breakfast',group:'主食',label:'早餐主食',options:[`燕麦、面包、馒头和玉米按当周早餐搭配，合计约 ${qty(.5,'kg')}`,`改用米饭 / 面条 / 红薯作早餐，按当周菜单调整`]},
+  {id:'tubers',group:'主食',label:'薯类',options:[`土豆 / 红薯约 ${qty(.8,'kg')}`,`用米饭 / 玉米替换相应主食份量`]},
+  {id:'poultry',group:'蛋白来源',label:'鸡肉',options:[`鸡胸 / 去皮鸡腿约 ${qty(1,'kg')}`,`用同餐的瘦肉 / 鱼 / 豆腐替换，按标签核对蛋白`]},
+  {id:'lean',group:'蛋白来源',label:'瘦肉',options:[`瘦牛 / 猪肉约 ${qty(.4,'kg')}`,`用鸡肉 / 鱼 / 豆腐替换同餐`]},
+  {id:'fish',group:'蛋白来源',label:'鱼虾',options:[`鱼肉约 ${qty(.45,'kg')}`,`虾仁约 ${qty(.45,'kg')}`,`不吃鱼虾：改用其他蛋白，留意营养搭配`]},
+  {id:'eggs',group:'蛋白来源',label:'鸡蛋',options:[`鸡蛋约 ${Math.max(4,Math.round(14*days/7))} 枚`,`不吃蛋：换豆腐 / 奶 / 肉，按实际份量补充`]},
+  {id:'tofu',group:'蛋白来源',label:'豆制品',options:[`北豆腐 / 豆干约 ${qty(1.3,'kg')}`,`其他豆制品，参考包装蛋白含量`]},
+  {id:'milk',group:'蛋白来源',label:'奶或替代品',options:[`牛奶约 ${qty(1.5,'L')}＋无糖豆浆约 ${qty(.4,'L')}`,`无糖豆奶或强化植物奶，按当周早餐和标签购买`]},
+  {id:'yogurt',group:'蛋白来源',label:'原味酸奶',options:[`高蛋白原味酸奶约 ${qty(1,'kg')}`,`用奶 / 豆浆 / 鸡蛋等替代，核对标签蛋白`]},
+  {id:'veg',group:'蔬果',label:'蔬菜',options:[`多色蔬菜约 ${qty(3.5,'kg')}，深色占一半左右`,`冷冻蔬菜和鲜蔬组合约 ${qty(3.5,'kg')}`]},
   {id:'fruit',group:'蔬果',label:'水果',options:[`当季水果约 ${qty(2,'kg')}`,`两三种易买水果合计约 ${qty(2,'kg')}`]}
  ];
  return {week,start,end,days,items};

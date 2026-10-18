@@ -1,5 +1,5 @@
-const CACHE='hundred-v4';
-const ASSETS=['./','./index.html','./style.css','./app.js?v=3','./core.js','./plan.js?v=3','./routine.js?v=3','./views.js?v=3','./practice.js','./sync.js?v=2','./config.js?v=2','./icon.svg','./manifest.webmanifest'];
+const CACHE='hundred-v5';
+const ASSETS=['./','./index.html','./style.css','./app.js?v=4','./core.js','./plan.js?v=4','./routine.js?v=4','./daily-body.js?v=4','./views.js?v=4','./practice.js','./sync.js?v=2','./config.js?v=2','./icon.svg','./manifest.webmanifest'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('hundred-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
 self.addEventListener('fetch',event=>{
